@@ -11,7 +11,8 @@ use actix_web::{
     Error, HttpServer,
     Responder, Result,
     web, middleware,
-    error, App
+    error, App,
+    http::header
 };
 
 
@@ -21,11 +22,10 @@ struct File {
 }
 
 
-fn index(tmpl: web::Data<tera::Tera>) -> Result<HttpResponse, Error> {
-    Ok(HttpResponse::Ok().content_type("text/html").body(
-        tmpl.render("index.html", &tera::Context::new())
-            .map_err(|_| error::ErrorInternalServerError("Template error."))?
-    ))
+fn index() -> Result<HttpResponse> {
+    Ok(HttpResponse::Found()
+       .header(header::LOCATION, "/home")
+       .finish())
 }
 
 
