@@ -4,6 +4,7 @@ mod tests;
 use tera;
 use std::io;
 use std::path::{Path, PathBuf};
+use serde::Deserialize;
 use actix_files as fs;
 use actix_web::{
     HttpRequest, HttpResponse,
@@ -14,20 +15,34 @@ use actix_web::{
 };
 
 
+#[derive(Deserialize)]
+struct File {
+    path: PathBuf
+}
+
+
 fn index(tmpl: web::Data<tera::Tera>) -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok().content_type("text/html").body(
         tmpl.render("index.html", &tera::Context::new())
             .map_err(|_| error::ErrorInternalServerError("Template error."))?
     ))
-
 }
 
 
-fn resource(req: HttpRequest) -> io::Result<fs::NamedFile> {
-    let file: PathBuf = req.match_info().query("filename").parse().unwrap();
-    let path = Path::new("./src/static/images").join(file);
+fn page((tmpl, pg): (web::Data<tera::Tera>, web::Path<File>)) -> Result<HttpResponse, Error> {
+    Ok(HttpResponse::Ok().content_type("text/html").body(
+        tmpl.render(
+            pg.path.with_extension("html").to_str().unwrap(),
+            &tera::Context::new()
+        ).map_err(|_| error::ErrorInternalServerError("Template error."))?
+    ))
+}
 
-    Ok(fs::NamedFile::open(path)?)
+
+fn asset(file: web::Path<File>) -> io::Result<fs::NamedFile> {
+    Ok(fs::NamedFile::open(
+        Path::new("./src/static/assets").join(&file.path))?
+    )
 }
 
 
@@ -42,7 +57,8 @@ fn main() {
             .data(tera)
             .wrap(middleware::Logger::default())
             .route("/", web::get().to(index))
-            .route("/s/{filename:.*}", web::get().to(resource))
+            .route("/{path}", web::get().to(page))
+            .route("/s/{path:.*}", web::get().to(asset))
     })
         .bind("127.0.0.1:8080")
         .unwrap()
