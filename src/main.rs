@@ -2,16 +2,14 @@
 mod tests;
 
 use tera;
-use std::env;
-use log;
 use std::path::{Path, PathBuf};
 use actix_files as fs;
 use actix_web::{
     HttpRequest, HttpResponse,
     Error, HttpServer,
+    Responder, Result,
     web, middleware,
-    error, App,
-    Responder, Result
+    error, App
 };
 
 
@@ -25,8 +23,7 @@ fn index(tmpl: web::Data<tera::Tera>) -> Result<HttpResponse, Error> {
 
 fn resource(req: HttpRequest) -> Result<fs::NamedFile> {
     let file: PathBuf = req.match_info().query("filename").parse().unwrap();
-    let path = Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "/src/static/images"))
-        .join(file);
+    let path = Path::new("./src/static/images").join(file);
 
     Ok(fs::NamedFile::open(path)?)
 }
@@ -37,8 +34,7 @@ fn main() {
     env_logger::init();
 
     HttpServer::new(|| {
-        // let root_dir = );
-        let tera = tera::compile_templates!(concat!(env!("CARGO_MANIFEST_DIR"), "/src/templates/**/*"));
+        let tera = tera::compile_templates!("./src/templates/**/*");
 
         App::new()
             .data(tera)
