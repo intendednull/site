@@ -2,6 +2,7 @@
 mod tests;
 
 use tera;
+use std::io;
 use std::path::{Path, PathBuf};
 use actix_files as fs;
 use actix_web::{
@@ -14,14 +15,15 @@ use actix_web::{
 
 
 fn index(tmpl: web::Data<tera::Tera>) -> Result<HttpResponse, Error> {
-    let r = tmpl.render("index.html", &tera::Context::new())
-        .map_err(|_| error::ErrorInternalServerError("Template error."))?;
+    Ok(HttpResponse::Ok().content_type("text/html").body(
+        tmpl.render("index.html", &tera::Context::new())
+            .map_err(|_| error::ErrorInternalServerError("Template error."))?
+    ))
 
-    Ok(HttpResponse::Ok().content_type("text/html").body(r))
 }
 
 
-fn resource(req: HttpRequest) -> Result<fs::NamedFile> {
+fn resource(req: HttpRequest) -> io::Result<fs::NamedFile> {
     let file: PathBuf = req.match_info().query("filename").parse().unwrap();
     let path = Path::new("./src/static/images").join(file);
 
