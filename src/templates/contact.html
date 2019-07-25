@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Contact{% endblock title %}
+{% block content %}
+<div class="container">
+    <h1 class="mt-5">Contact</h1>
+    <hr>
+    <form action="/mail" method="post">
+        <div class="form-group">
+            <label for="userName">Name</label>
+            <input class="form-control"
+                   id="userName"
+                   name="userName"
+                   placeholder="Enter your name" required>
+        </div>
+        <div class="form-group">
+            <label for="userEmail">Email</label>
+            <input class="form-control"
+                   type="email"
+                   id="userEmail"
+                   name="userEmail"
+                   placeholder="Enter your email (optional)">
+        </div>
+        <div class="form-group">
+            <label for="body">Body</label>
+            <textarea class="form-control"
+                      id="body"
+                      name="body"
+                      rows="6" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock content %}
