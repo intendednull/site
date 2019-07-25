@@ -7,7 +7,7 @@ use lettre::{SendableEmail, Envelope, EmailAddress, Transport};
 #[derive(Deserialize)]
 struct EmailForm {
     name: String,
-    email: Option<String>,
+    email: String,
     body: String
 }
 
@@ -20,10 +20,10 @@ pub fn mail_service(cfg: &mut web::ServiceConfig) {
 }
 
 
-fn mail((mut form, tmpl): (web::Form<EmailForm>, web::Data<tera::Tera>)) -> Result<HttpResponse> {
+fn mail((form, tmpl): (web::Form<EmailForm>, web::Data<tera::Tera>)) -> Result<HttpResponse> {
     let email = SendableEmail::new(
         Envelope::new(
-            Some(EmailAddress::new(form.email.take().unwrap()).unwrap()),
+            Some(EmailAddress::new(form.email.clone()).unwrap()),
             vec![EmailAddress::new("noah@coronasoftware.net".to_string()).unwrap()],
         ).unwrap(),
         form.name.clone(),
