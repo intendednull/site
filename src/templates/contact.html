@@ -30,6 +30,8 @@
     </form>
     {% if message %}
     <div class="alert alert-success my-3" role="alert">{{ message }}</div>
+    {% elif error %}
+    <div class="alert alert-danger my-3" role="alert">{{ error }}</div>
     {% endif %}
 </div>
 {% endblock content %}

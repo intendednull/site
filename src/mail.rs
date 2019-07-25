@@ -31,10 +31,13 @@ fn mail((mut form, tmpl): (web::Form<EmailForm>, web::Data<tera::Tera>)) -> Resu
     );
     let mut sender = SendmailTransport::new();
     let result = sender.send(email);
-    assert!(result.is_ok());
 
     let mut context = tera::Context::new();
-    context.insert("message", "Success!");
+    if result.is_ok() {
+        context.insert("message", "Success!");
+    } else {
+        context.insert("error", "Oops, something went wrong..");
+    }
 
     Ok(HttpResponse::Ok().content_type("text/html").body(
         tmpl.render("contact.html", &context)
