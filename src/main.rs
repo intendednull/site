@@ -15,6 +15,7 @@ use actix_web::{
     http::header
 };
 
+mod mail;
 
 #[derive(Deserialize)]
 struct File {
@@ -59,6 +60,7 @@ fn main() {
             .route("/", web::get().to(index))
             .route("/{path}", web::get().to(page))
             .route("/s/{path:.*}", web::get().to(asset))
+            .configure(mail::mail_service)
     })
         .bind("127.0.0.1:8080")
         .unwrap()
