@@ -30,7 +30,7 @@ fn index() -> Result<HttpResponse> {
 }
 
 
-fn page((tmpl, pg): (web::Data<tera::Tera>, web::Path<File>)) -> Result<HttpResponse, Error> {
+fn page((tmpl, pg): (web::Data<tera::Tera>, web::Path<File>)) -> Result<HttpResponse> {
     Ok(HttpResponse::Ok().content_type("text/html").body(
         tmpl.render(
             pg.path.with_extension("html").to_str().unwrap(),

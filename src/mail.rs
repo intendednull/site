@@ -1,4 +1,4 @@
-use actix_web::{Result, web, HttpResponse};
+use actix_web::{error, Result, web, HttpResponse};
 use serde::Deserialize;
 use lettre::sendmail::SendmailTransport;
 use lettre::{SendableEmail, Envelope, EmailAddress, Transport};
@@ -14,13 +14,13 @@ struct EmailForm {
 
 pub fn mail_service(cfg: &mut web::ServiceConfig) {
     cfg.service(
-        web::resource("/mail")
+        web::resource("/contact")
             .route(web::post().to(mail))
     );
 }
 
 
-fn mail(mut form: web::Form<EmailForm>) -> Result<HttpResponse> {
+fn mail((mut form, tmpl): (web::Form<EmailForm>, web::Data<tera::Tera>)) -> Result<HttpResponse> {
     let email = SendableEmail::new(
         Envelope::new(
             Some(EmailAddress::new(form.email.take().unwrap()).unwrap()),
@@ -29,10 +29,15 @@ fn mail(mut form: web::Form<EmailForm>) -> Result<HttpResponse> {
         form.name.clone(),
         form.body.as_bytes().to_vec()
     );
-
     let mut sender = SendmailTransport::new();
     let result = sender.send(email);
     assert!(result.is_ok());
 
-    Ok(HttpResponse::Ok().finish())
+    let mut context = tera::Context::new();
+    context.insert("message", "Success!");
+
+    Ok(HttpResponse::Ok().content_type("text/html").body(
+        tmpl.render("contact.html", &context)
+            .map_err(|_| error::ErrorInternalServerError("Template error."))?)
+    )
 }

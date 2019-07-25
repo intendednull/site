@@ -4,7 +4,7 @@
 <div class="container">
     <h1 class="mt-5">Contact</h1>
     <hr>
-    <form action="/mail" method="post">
+    <form action="/contact" method="post">
         <div class="form-group">
             <label for="name">Name</label> <input class="form-control"
                    id="name"
@@ -17,7 +17,7 @@
                    type="email"
                    id="email"
                    name="email"
-                   placeholder="Enter your email (optional)">
+                   placeholder="Enter your email" required>
         </div>
         <div class="form-group">
             <label for="body">Body</label>
@@ -26,7 +26,10 @@
                       name="body"
                       rows="6" required></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
     </form>
+    {% if message %}
+    <div class="alert alert-success my-3" role="alert">{{ message }}</div>
+    {% endif %}
 </div>
 {% endblock content %}
