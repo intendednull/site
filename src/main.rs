@@ -59,7 +59,7 @@ fn main() {
             .wrap(middleware::Logger::default())
             .route("/", web::get().to(index))
             .route("/{path}", web::get().to(page))
-            .route("/s/{path:.*}", web::get().to(asset))
+            .route("/s/{path:.*}", web::get().to(asset))  // Support asset url from previous site
             .configure(mail::mail_service)
     })
         .bind("127.0.0.1:8080")
