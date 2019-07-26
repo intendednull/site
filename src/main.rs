@@ -23,6 +23,7 @@ struct File {
 }
 
 
+// Redirect to `/home`
 fn index() -> Result<HttpResponse> {
     Ok(HttpResponse::Found()
        .header(header::LOCATION, "/home")
@@ -30,6 +31,7 @@ fn index() -> Result<HttpResponse> {
 }
 
 
+// The main distributer for page get requests.
 fn page((tmpl, pg): (web::Data<tera::Tera>, web::Path<File>)) -> Result<HttpResponse> {
     Ok(HttpResponse::Ok().content_type("text/html").body(
         tmpl.render(
@@ -40,10 +42,14 @@ fn page((tmpl, pg): (web::Data<tera::Tera>, web::Path<File>)) -> Result<HttpResp
 }
 
 
-fn asset(file: web::Path<File>) -> io::Result<fs::NamedFile> {
-    Ok(fs::NamedFile::open(
-        Path::new("./src/static/assets").join(&file.path))?
-    )
+// Redirect asset requests to the static file service.
+// This is assigned to the url `/s/{file}` in order to maintain documents that
+// link to the assets of my old website.
+fn asset(file: web::Path<File>) -> Result<HttpResponse> {
+    let name = file.path.file_name().unwrap().to_str().unwrap();
+    Ok(HttpResponse::Found()
+       .header(header::LOCATION, format!("/static/assets/{}", name))
+       .finish())
 }
 
 
@@ -59,9 +65,9 @@ fn main() {
             .wrap(middleware::Logger::default())
             .route("/", web::get().to(index))
             .route("/{path}", web::get().to(page))
-            .route("/s/{path:.*}", web::get().to(asset))  // Support asset url from previous site
             .configure(mail::mail_service)
             .service(fs::Files::new("/static", "./src/static").show_files_listing())
+            .route("/s/{path:.*}", web::get().to(asset))
     })
         .bind("127.0.0.1:8080")
         .unwrap()
