@@ -61,6 +61,7 @@ fn main() {
             .route("/{path}", web::get().to(page))
             .route("/s/{path:.*}", web::get().to(asset))  // Support asset url from previous site
             .configure(mail::mail_service)
+            .service(fs::Files::new("/static", "./src/static").show_files_listing())
     })
         .bind("127.0.0.1:8080")
         .unwrap()
