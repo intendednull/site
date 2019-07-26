@@ -17,12 +17,14 @@
     <body>
         <div id="header">{% block header %}{% include "components/navbar.html" %}{% endblock header %}</div>
         <div id="content" class="container-fluid">{% block content %}{% endblock content %}</div>
-        <div class="container text-center my-5 fixed-bottom" id="footer">
-            {% block footer %}
-            &copy; Copyright 2019 by Noah Corona
-            {% endblock footer %}
-        </div>
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </body>
+    <footer class="container-fluid text-center p-2 bg-dark position-absolute"
+            style="bottom: 0;">
+        {% block footer %}
+        <div class="py-4">{% include "components/social.html" %}</div>
+        <p class="font-weight-light text-light">&copy; Copyright 2019 by Noah Corona</p>
+        {% endblock footer %}
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </html>
