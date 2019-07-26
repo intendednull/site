@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Profile{% endblock title %}
+{% block header %}
+{% set current_page = "profile" %}
+{{ super() }}
+{% endblock header %}
 {% block content %}
 <div class="text-center">
     <h1>Profile</h1>
