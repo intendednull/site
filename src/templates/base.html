@@ -19,8 +19,12 @@
         <div id="content" class="container-fluid flex-grow-1">{% block content %}{% endblock content %}</div>
         <div id="footer" class="container-fluid text-center p-2 mt-5 bg-dark">
             {% block footer %}
-            <div class="py-4">{% include "components/social.html" %}</div>
-            <p class="font-weight-light font-italic text-light">&copy; Copyright 2019 by Noah Corona</p>
+            <a class="my-2"
+               href="https://github.com/Zer0897/site"
+               target="_blank"
+               rel="noopener noreferrer">This site is open source</a>
+            <div class="my-2">{% include "components/social.html" %}</div>
+            <p class="font-weight-light text-light mt-3">Copyright &copy; 2019 Noah Corona</p>
             {% endblock footer %}
         </div>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
