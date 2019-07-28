@@ -6,6 +6,7 @@ use std::io;
 use std::path::{Path, PathBuf};
 use serde::Deserialize;
 use actix_files as fs;
+use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use actix_web::{
     HttpRequest, HttpResponse,
     Error, HttpServer,
@@ -56,6 +57,13 @@ fn asset(file: web::Path<File>) -> Result<HttpResponse> {
 fn main() {
     std::env::set_var("RUST_LOG", "actix_web=debug");
     env_logger::init();
+
+    let mut builder =
+        SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
+    builder
+        .set_private_key_file("key.pem", SslFiletype::PEM)
+        .unwrap();
+    builder.set_certificate_chain_file("cert.pem").unwrap();
 
     HttpServer::new(|| {
         let tera = tera::compile_templates!("./src/templates/**/*");
