@@ -12,6 +12,7 @@ struct EmailForm {
 }
 
 
+// Match a post to contact page.
 pub fn mail_service(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::resource("/contact")
@@ -20,18 +21,25 @@ pub fn mail_service(cfg: &mut web::ServiceConfig) {
 }
 
 
+// TODO Figure out why the email isn't being received.
 fn mail((form, tmpl): (web::Form<EmailForm>, web::Data<tera::Tera>)) -> Result<HttpResponse> {
     let email = SendableEmail::new(
         Envelope::new(
+            // From
             Some(EmailAddress::new(form.email.clone()).unwrap()),
+            // To
             vec![EmailAddress::new("noah@coronasoftware.net".to_string()).unwrap()],
         ).unwrap(),
-        form.name.clone(),
+        // Subject
+        format!("Contact from: {}", form.name.clone()),
+        // Body
         form.body.as_bytes().to_vec()
     );
     let mut sender = SendmailTransport::new();
     let result = sender.send(email);
 
+    // User feedback.
+    // TODO Make this more general, usable by all services.
     let mut context = tera::Context::new();
     if result.is_ok() {
         context.insert("message", "Success!");

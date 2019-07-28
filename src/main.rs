@@ -1,22 +1,17 @@
-#[cfg(test)]
-mod tests;
-
+// #[cfg(test)]
+// mod tests;
 use tera;
-use std::io;
-use std::path::{Path, PathBuf};
+use std::path::{PathBuf};
 use serde::Deserialize;
 use actix_files as fs;
-use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 use actix_web::{
-    HttpRequest, HttpResponse,
-    Error, HttpServer,
-    Responder, Result,
-    web, middleware,
-    error, App,
-    http::header
+    HttpResponse, HttpServer,
+    Result, App, web, middleware,
+    error, http::header
 };
 
 mod mail;
+
 
 #[derive(Deserialize)]
 struct File {
@@ -24,7 +19,7 @@ struct File {
 }
 
 
-// Redirect to `/home`
+// Redirect to `/home`.
 fn index() -> Result<HttpResponse> {
     Ok(HttpResponse::Found()
        .header(header::LOCATION, "/home")
@@ -32,57 +27,59 @@ fn index() -> Result<HttpResponse> {
 }
 
 
-// The main distributer for page get requests.
+// Render and serve templates.
+// TODO Use global lazy static?
+// TODO Implement actix friendly template errors.
 fn page((tmpl, pg): (web::Data<tera::Tera>, web::Path<File>)) -> Result<HttpResponse> {
-    Ok(HttpResponse::Ok().content_type("text/html").body(
-        tmpl.render(
-            pg.path.with_extension("html").to_str().unwrap(),
-            &tera::Context::new()
-        ).map_err(|_| error::ErrorInternalServerError("Template error."))?
-    ))
+    Ok(HttpResponse::Ok()
+       .content_type("text/html")
+       .body(
+           tmpl.render(
+               pg.path.with_extension("html").to_str().unwrap(),
+               &tera::Context::new()
+           ).map_err(|_| error::ErrorInternalServerError("Template error."))?
+       ))
 }
 
 
-// Redirect asset requests to the static file service.
-// This is assigned to the url `/s/{file}` in order to maintain documents that
-// link to the assets of my old website.
+// Redirect asset requests to static file service.
+// Backwards compatible with old site.
 fn asset(file: web::Path<File>) -> Result<HttpResponse> {
-    let name = file.path.file_name().unwrap().to_str().unwrap();
+    let fname = file.path
+        .file_name().unwrap()
+        .to_str().unwrap();
     Ok(HttpResponse::Found()
-       .header(header::LOCATION, format!("/static/assets/{}", name))
+       .header(header::LOCATION, format!("/static/assets/{}", fname))
        .finish())
 }
 
 
-fn main() {
+// Uses relative paths.
+// TODO Use ini file.
+fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=debug");
     env_logger::init();
-
-    let mut builder =
-        SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
-    builder
-        .set_private_key_file("key.pem", SslFiletype::PEM)
-        .unwrap();
-    builder.set_certificate_chain_file("cert.pem").unwrap();
 
     HttpServer::new(|| {
         let tera = tera::compile_templates!("./src/templates/**/*");
 
         App::new()
+            // Middleware
             .wrap(middleware::DefaultHeaders::new().header("X-Version", "0.2"))
             .wrap(middleware::Compress::default())
             .wrap(middleware::Logger::default())
+            // Templates
             .data(tera)
+            // Routes
             .route("/", web::get().to(index))
             .route("/{path}", web::get().to(page))
+            .route("/s/{path:.*}", web::get().to(asset))
+            // Services
             .configure(mail::mail_service)
             .service(fs::Files::new("/static", "./src/static").show_files_listing())
-            .route("/s/{path:.*}", web::get().to(asset))
     })
         // .bind_uds("./site.sock")
-        .bind("127.0.0.1:8080")
-        .unwrap()
+        .bind("127.0.0.1:8080")?
         .workers(1)
         .run()
-        .unwrap()
 }
