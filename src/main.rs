@@ -11,6 +11,7 @@ use actix_web::{
 };
 
 mod mail;
+mod blog;
 
 
 #[derive(Deserialize)]
@@ -76,6 +77,7 @@ fn main() -> std::io::Result<()> {
             .route("/s/{path:.*}", web::get().to(asset))
             // Services
             .configure(mail::mail_service)
+            .configure(blog::blog_service)
             .service(fs::Files::new("/static", "./src/static").show_files_listing())
     })
         // .bind_uds("./site.sock")
