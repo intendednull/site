@@ -61,14 +61,17 @@ fn main() {
         let tera = tera::compile_templates!("./src/templates/**/*");
 
         App::new()
-            .data(tera)
+            .wrap(middleware::DefaultHeaders::new().header("X-Version", "0.2"))
+            .wrap(middleware::Compress::default())
             .wrap(middleware::Logger::default())
+            .data(tera)
             .route("/", web::get().to(index))
             .route("/{path}", web::get().to(page))
             .configure(mail::mail_service)
             .service(fs::Files::new("/static", "./src/static").show_files_listing())
             .route("/s/{path:.*}", web::get().to(asset))
     })
+        // .bind_uds("./site.sock")
         .bind("127.0.0.1:8080")
         .unwrap()
         .workers(1)
