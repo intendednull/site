@@ -62,6 +62,9 @@ fn main() -> std::io::Result<()> {
     env_logger::init();
 
     HttpServer::new(|| {
+        // Create template files from raw blog posts
+        blog::update_blog();
+        // Register all templates
         let tera = tera::compile_templates!("./src/templates/**/*");
 
         App::new()
@@ -77,7 +80,6 @@ fn main() -> std::io::Result<()> {
             .route("/s/{path:.*}", web::get().to(asset))
             // Services
             .configure(mail::mail_service)
-            .configure(blog::blog_service)
             .service(fs::Files::new("/static", "./src/static").show_files_listing())
     })
         // .bind_uds("./site.sock")
