@@ -1,11 +1,3 @@
 * Setup
 ** Pandoc
-   My blog is writting with the org markdown language.
-   This is used to convert org to html.
-
-   1. [[https://pandoc.org/installing.html][Install pandoc]]
-   2. Add to cargo file
-      #+begin_src toml
-      [dependencies]
-      pandoc = { path = "/usr/bin/pandoc"}
-      #+end_src
+   [[https://pandoc.org/installing.html][Pandoc]] is used to convert org files to html.
