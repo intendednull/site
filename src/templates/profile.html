@@ -6,6 +6,17 @@
 {% endblock header %}
 {% block content %}
 <div class="container mt-5">
-    {% include "blog/intro.html" %}
+    <div class="media">
+        <img src="./s/profile.jpg"
+             class="align-self-center mr-5"
+             style="width: 300px;"
+             alt="My dog Rust and I on an old bridge.">
+        <div class="media-body">
+            <h1 class="mt-0">Noah Corona</h1>
+            <hr>
+            <p class="mb-0">{% include "blog/intro.html" %}</p>
+        </div>
+    </div>
+
 </div>
 {% endblock content %}
