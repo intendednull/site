@@ -72,15 +72,18 @@ fn main() -> std::io::Result<()> {
             .wrap(middleware::DefaultHeaders::new().header("X-Version", "0.2"))
             .wrap(middleware::Compress::default())
             .wrap(middleware::Logger::default())
-            // Templates
             .data(tera)
             // Routes
             .route("/", web::get().to(index))
-            .route("/{path}", web::get().to(page))
+            .route("/favicon.ico", web::to(
+                || HttpResponse::Found()
+                    .header(header::LOCATION, "/static/assets/favicon.ico")
+                    .finish()))
             .route("/s/{path:.*}", web::get().to(asset))
+            .route("/{path}", web::get().to(page))
             // Services
-            .configure(mail::mail_service)
             .service(fs::Files::new("/static", "./src/static").show_files_listing())
+            .configure(mail::mail_service)
     })
         // .bind_uds("./site.sock")
         .bind("127.0.0.1:8080")?
