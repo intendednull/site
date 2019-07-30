@@ -1,5 +1,3 @@
-// #[cfg(test)]
-// mod tests;
 use tera;
 use std::path::{PathBuf};
 use serde::Deserialize;
@@ -20,9 +18,9 @@ struct File {
 }
 
 
-// Render and serve templates.
 // TODO Use global lazy static?
 // TODO Implement actix friendly template errors.
+/// Render and serve templates.
 fn page((tmpl, pg): (web::Data<tera::Tera>, web::Path<File>)) -> Result<HttpResponse> {
     Ok(HttpResponse::Ok()
        .content_type("text/html")
@@ -35,8 +33,8 @@ fn page((tmpl, pg): (web::Data<tera::Tera>, web::Path<File>)) -> Result<HttpResp
 }
 
 
-// Redirect asset requests to static file service.
-// Backwards compatible with old site.
+/// Redirect asset requests to static file service.
+/// Backwards compatible with old site.
 fn asset(file: web::Path<File>) -> Result<HttpResponse> {
     let fname = file.path
         .file_name().unwrap()
@@ -48,6 +46,7 @@ fn asset(file: web::Path<File>) -> Result<HttpResponse> {
 
 
 // TODO Use ini file.
+/// Start server.
 /// **WARNING** relative pathing
 fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=debug");

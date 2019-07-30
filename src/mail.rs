@@ -12,7 +12,7 @@ struct EmailForm {
 }
 
 
-// Match a post to contact page.
+/// Match a post to contact page.
 pub fn mail_service(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::resource("/contact")
@@ -22,6 +22,7 @@ pub fn mail_service(cfg: &mut web::ServiceConfig) {
 
 
 // TODO Figure out why the email isn't being received.
+/// Parse contact form and send the email.
 fn mail((form, tmpl): (web::Form<EmailForm>, web::Data<tera::Tera>)) -> Result<HttpResponse> {
     let email = SendableEmail::new(
         Envelope::new(

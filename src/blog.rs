@@ -2,6 +2,8 @@ use pandoc;
 use std::path::Path;
 
 
+/// Convert all blog `org` files to `html`.
+/// Places the html files in a directory that is visible by `tera`.
 pub fn update_blog() {
     let blogdir = Path::new("./src/static/blog");
     let outdir = Path::new("./src/templates/blog");
@@ -14,6 +16,7 @@ pub fn update_blog() {
 }
 
 
+/// Use pandoc to convert `org` file to `html`.
 fn convert(fp: &Path, outdir: &Path) {
     let mut pdoc = pandoc::new();
     let fpout = outdir
