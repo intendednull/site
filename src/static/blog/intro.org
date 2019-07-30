@@ -1,5 +1,8 @@
 * Noah Corona
   ---------
+  #+caption: My dog Rust and I on an old bridge.
+  [[https://coronasoftware.net/s/profile.jpg]]
+
   Noah Corona is the sole proprietor of Corona Software Solutions. He takes pride in building robust
   software that is tailored to the problem while remaining open for expansion. Whether he's part of
   a team maintaining large scale multi-application projects or soley responsible for the conception
