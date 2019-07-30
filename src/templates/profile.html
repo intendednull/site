@@ -6,17 +6,20 @@
 {% endblock header %}
 {% block content %}
 <div class="container mt-5">
-    <div class="media">
-        <img src="./s/profile.jpg"
-             class="align-self-center mr-5"
-             style="width: 300px;"
-             alt="My dog Rust and I on an old bridge.">
-        <div class="media-body">
-            <h1 class="mt-0">Noah Corona</h1>
-            <hr>
-            <p class="mb-0">{% include "blog/intro.html" %}</p>
+    <div class="card mb-3">
+        <h1 class="card-header text-center">Noah Corona</h1>
+        <div class="row no-gutters">
+            <div class="col-md-4">
+                <img src="./s/profile.jpg"
+                     class="card-img align-center"
+                     alt="Noah and his dog Rust on an old bridge.">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <p class="card-text">{% include "blog/intro.html" %}</p>
+                </div>
+            </div>
         </div>
     </div>
-
 </div>
 {% endblock content %}
