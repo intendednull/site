@@ -20,14 +20,6 @@ struct File {
 }
 
 
-// Redirect to `/home`.
-fn index() -> Result<HttpResponse> {
-    Ok(HttpResponse::Found()
-       .header(header::LOCATION, "/home")
-       .finish())
-}
-
-
 // Render and serve templates.
 // TODO Use global lazy static?
 // TODO Implement actix friendly template errors.
@@ -55,16 +47,14 @@ fn asset(file: web::Path<File>) -> Result<HttpResponse> {
 }
 
 
-// Uses relative paths.
 // TODO Use ini file.
+/// **WARNING** relative pathing
 fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=debug");
     env_logger::init();
 
     HttpServer::new(|| {
-        // Create template files from raw blog posts
         blog::update_blog();
-        // Register all templates
         let tera = tera::compile_templates!("./src/templates/**/*");
 
         App::new()
@@ -74,7 +64,10 @@ fn main() -> std::io::Result<()> {
             .wrap(middleware::Logger::default())
             .data(tera)
             // Routes
-            .route("/", web::get().to(index))
+            .route("/", web::to(
+                || HttpResponse::Found()
+                    .header(header::LOCATION, "/home")
+                    .finish()))
             .route("/favicon.ico", web::to(
                 || HttpResponse::Found()
                     .header(header::LOCATION, "/static/assets/favicon.ico")
@@ -85,7 +78,7 @@ fn main() -> std::io::Result<()> {
             .service(fs::Files::new("/static", "./src/static").show_files_listing())
             .configure(mail::mail_service)
     })
-        // .bind_uds("./site.sock")
+        // .bind_uds("./site.sock")?
         .bind("127.0.0.1:8080")?
         .workers(1)
         .run()
