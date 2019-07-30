@@ -2,18 +2,21 @@
 {% block title %}Home{% endblock title %}
 {% block content %}
 <div class="text-center">
-    <br class="mt-3">
-    <img class="my-5" src="/s/Logo.png" style="height: 200px;">
-    <h1 class="display-4">Noah Corona</h1>
-    <h5 class="lead">Software Engineer</h5>
+    <img class="my-5 img-fluid rounded mx-auto d-block" src="/s/Logo.png" style="max-height: 250px;">
+    <div  style="font-family: novecento;">
+        <h1 class="display-4">
+            <a class="text-reset text-decoration-none"
+               href="/profile">Noah Corona</a></h1>
+        <h5 class="lead">Software Engineer</h5>
+    </div>
     <hr style="width: 70%;">
     <div class="my-5">
-        <a class="btn btn-primary btn-lg mr-3"
+        <a class="btn btn-primary btn-lg m-3"
            target="_blank"
            rel="noopener noreferrer"
            href="https://github.com/Zer0897"
-           role="button">Github</a>
-        <a class="btn btn-secondary btn-lg" href="/contact" role="button">Contact</a>
+           role="button">Github </a>
+        <a class="btn btn-secondary btn-lg m-2" href="/contact" role="button">Contact</a>
     </div>
 </div>
 {% endblock content %}
