@@ -2,6 +2,7 @@ use tera;
 use std::path::{PathBuf};
 use serde::Deserialize;
 use ini::Ini;
+use dotenv::dotenv;
 use actix_files as fs;
 use actix_web::{
     HttpResponse, HttpServer,
@@ -46,14 +47,14 @@ fn asset(file: web::Path<File>) -> Result<HttpResponse> {
 }
 
 
-// TODO Use ini file.
-/// Start server.
+/// Start the server.
 fn main() -> std::io::Result<()> {
-    std::env::set_var("RUST_LOG", "actix_web=debug,site");
-    env_logger::init();
 
     HttpServer::new(|| {
         blog::update_blog();
+        dotenv().ok();
+        env_logger::init();
+
         let tera = tera::compile_templates!("src/templates/**/*");
         let conf = Ini::load_from_file("conf.ini").unwrap();
 
@@ -73,6 +74,7 @@ fn main() -> std::io::Result<()> {
                 || HttpResponse::Found()
                     .header(header::LOCATION, "/static/assets/favicon.ico")
                     .finish()))
+            // Alias for /static/assets/
             .route("/s/{path:.*}", web::get().to(asset))
             .route("/{path}", web::get().to(page))
             // Services
