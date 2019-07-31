@@ -5,8 +5,8 @@ use std::path::Path;
 /// Convert all blog `org` files to `html`.
 /// Places the html files in a directory that is visible by `tera`.
 pub fn update_blog() {
-    let blogdir = Path::new("./src/static/blog");
-    let outdir = Path::new("./src/templates/blog");
+    let blogdir = Path::new("blog");
+    let outdir = Path::new("src/templates/blog");
 
     for entry in blogdir.read_dir().unwrap() {
         if let Ok(entry) = entry {

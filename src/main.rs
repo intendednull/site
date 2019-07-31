@@ -54,7 +54,7 @@ fn main() -> std::io::Result<()> {
 
     HttpServer::new(|| {
         blog::update_blog();
-        let tera = tera::compile_templates!("./src/templates/**/*");
+        let tera = tera::compile_templates!("src/templates/**/*");
         let conf = Ini::load_from_file("conf.ini").unwrap();
 
         App::new()
@@ -76,7 +76,7 @@ fn main() -> std::io::Result<()> {
             .route("/s/{path:.*}", web::get().to(asset))
             .route("/{path}", web::get().to(page))
             // Services
-            .service(fs::Files::new("/static", "./src/static").show_files_listing())
+            .service(fs::Files::new("/static", "static").show_files_listing())
             .configure(mail::mail_service)
     })
         // .bind_uds("./site.sock")?
