@@ -1,6 +1,7 @@
 use tera;
 use std::path::{PathBuf};
 use serde::Deserialize;
+use ini::Ini;
 use actix_files as fs;
 use actix_web::{
     HttpResponse, HttpServer,
@@ -47,14 +48,14 @@ fn asset(file: web::Path<File>) -> Result<HttpResponse> {
 
 // TODO Use ini file.
 /// Start server.
-/// **WARNING** relative pathing
 fn main() -> std::io::Result<()> {
-    std::env::set_var("RUST_LOG", "actix_web=debug");
+    std::env::set_var("RUST_LOG", "actix_web=debug,site");
     env_logger::init();
 
     HttpServer::new(|| {
         blog::update_blog();
         let tera = tera::compile_templates!("./src/templates/**/*");
+        let conf = Ini::load_from_file("conf.ini").unwrap();
 
         App::new()
             // Middleware
@@ -62,6 +63,7 @@ fn main() -> std::io::Result<()> {
             .wrap(middleware::Compress::default())
             .wrap(middleware::Logger::default())
             .data(tera)
+            .data(conf)
             // Routes
             .route("/", web::to(
                 || HttpResponse::Found()

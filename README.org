@@ -1,3 +1,12 @@
 * Setup
 ** Pandoc
-   [[https://pandoc.org/installing.html][Pandoc]] is used to convert org files to html.
+   Install [[https://pandoc.org/installing.html][Pandoc]], it is used to convert the blog's org files to html.
+** SMTP
+   Create/Add the following section to `conf.ini` in the project root directory.
+   #+begin_src conf
+   [smtp]
+   mailto=example@example.com
+   server=smtp.example.com
+   user=example@example.com
+   pass=examplepass123
+   #+end_src
