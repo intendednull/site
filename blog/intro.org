@@ -1,7 +1,7 @@
-Noah Corona is the sole proprietor of Corona Software Solutions. He takes pride in developing robust
-software that's tailored to the problem it solves while remaining open for extension. Whether he's part of
-a team maintaining large scale multi-application projects or soley responsible for the conception
-of a startup's new idea, high-quality code is always a priority.
+Noah Corona is the sole proprietor of Corona Software Solutions. He takes pride in developing software that
+provides robust, elegant answers while remaining open for extension. Whether he's part of a team maintaining
+large scale multi-application projects or soley responsible for the conception of a startup's new idea,
+high-quality code is always a priority.
 
 Noah is an active volunteer staff member of the [[https://pythondiscord.com/][Python Discord]] community. As a helper he enjoys supporting
 beginners to the language, and discussing new ways to improve his skills. He won't hesitate to
