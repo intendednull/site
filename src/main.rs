@@ -20,8 +20,6 @@ struct File {
 }
 
 
-// TODO Use global lazy static?
-// TODO Implement actix friendly template errors.
 /// Render and serve templates.
 fn page((tmpl, pg): (web::Data<tera::Tera>, web::Path<File>)) -> Result<HttpResponse> {
     Ok(HttpResponse::Ok()
