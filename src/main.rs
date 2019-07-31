@@ -47,11 +47,11 @@ fn asset(file: web::Path<File>) -> Result<HttpResponse> {
 
 /// Start the server.
 fn main() -> std::io::Result<()> {
+    dotenv().ok();
+    env_logger::init();
 
     HttpServer::new(|| {
         blog::update_blog();
-        dotenv().ok();
-        env_logger::init();
 
         let tera = tera::compile_templates!("src/templates/**/*");
         let conf = Ini::load_from_file("conf.ini").unwrap();
