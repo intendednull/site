@@ -1,6 +1,7 @@
 * Setup
-** Pandoc
-   Install [[https://pandoc.org/installing.html][Pandoc]], it is used to convert the blog's org files to html.
+** Dependencies
+   - [[https://www.rust-lang.org/tools/install][Rust]]
+   - [[https://pandoc.org/installing.html][Pandoc]]
 ** SMTP
    Create/Add the following section to `conf.ini` in the project root directory.
    #+begin_src conf
@@ -10,3 +11,7 @@
    user=example@example.com
    pass=examplepass123
    #+end_src
+* Run
+  #+begin_src sh
+  $ cargo run --release
+  #+end_src
