@@ -3,7 +3,7 @@
    - [[https://www.rust-lang.org/tools/install][Rust]]
    - [[https://pandoc.org/installing.html][Pandoc]]
 ** SMTP
-   Create/Add the following section to `conf.ini` in the project root directory.
+   Create/Add the following section to ~conf.ini~ in the project root directory.
    #+begin_src conf
    [smtp]
    mailto=example@example.com
