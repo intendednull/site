@@ -15,3 +15,6 @@
   #+begin_src sh
   $ cargo run --release
   #+end_src
+
+-----
+[[https://coronasoftware.net][https://coronasoftware.net/s/sLogo.png]]
