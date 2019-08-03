@@ -18,3 +18,25 @@
 
 -----
 [[https://coronasoftware.net][https://coronasoftware.net/s/sLogo.png]]
+* Project
+** TODO Refactor template rendering
+   Handle all render logic in one spot.
+   Allow optional passing of context.
+** TODO Implement user feedback w/ templates
+   [[file:src/mail.rs:://%20TODO%20Make%20this%20more%20general,%20usable%20by%20all%20services.][Already hardcoded in contact form.]]
+   Move inside future template rendering fn?
+** TODO Remove index redirect to home
+   Although inconsistency is bad, redirecting is worse.
+   Either remove the ~/home~ portion altogther or modify history.
+   #+begin_src js
+   history.replaceState({}, 'home', '/home');
+   #+end_src
+
+   Using ~/~ as home will disrupt the page matching function. Use enum?
+** TODO Add template for blog posts [0/5]
+   - [ ] Timestamp last date modified or published.
+   - [ ] Get title of post. Use file name?
+   - [ ] Choose a theme for exporting.
+   - [ ] Add logic for only exporting files that change.
+     Might not be necessary, only happens once... Very fast.
+** TODO Make tera instance global [[https://github.com/rust-lang-nursery/lazy-static.rs][static]]
