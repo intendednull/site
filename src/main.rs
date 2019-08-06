@@ -17,7 +17,7 @@ mod blog;
 
 #[derive(Deserialize)]
 struct File {
-    path: PathBuf
+    path: Option<PathBuf>
 }
 
 lazy_static! {
@@ -27,14 +27,16 @@ lazy_static! {
 
 
 /// Render and serve templates.
-fn page((tmpl, pg): (web::Data<&TERA>, web::Path<File>)) -> Result<HttpResponse> {
+fn page((_tera, pg): (web::Data<&TERA>, web::Path<File>)) -> Result<HttpResponse> {
+    let template = match &pg.path {
+        Some(p) => p.with_extension("html").to_str().unwrap().to_owned(),
+        None => "home.html".to_owned(),
+    };
+
     Ok(HttpResponse::Ok()
        .content_type("text/html")
-       .body(
-           tmpl.render(
-               pg.path.with_extension("html").to_str().unwrap(),
-               &tera::Context::new()
-           ).map_err(|_| error::ErrorInternalServerError("Template error."))?
+       .body(_tera.render(&template, &tera::Context::new())
+             .map_err(|_| error::ErrorInternalServerError("Template error."))?
        ))
 }
 
@@ -42,14 +44,13 @@ fn page((tmpl, pg): (web::Data<&TERA>, web::Path<File>)) -> Result<HttpResponse>
 /// Redirect asset requests to static file service.
 /// Backwards compatible with old site.
 fn asset(file: web::Path<File>) -> Result<HttpResponse> {
-    let fname = file.path
+    let fname = file.path.as_ref().unwrap()
         .file_name().unwrap()
         .to_str().unwrap();
     Ok(HttpResponse::Found()
        .header(header::LOCATION, format!("/static/assets/{}", fname))
        .finish())
 }
-
 
 
 /// Start the server.
@@ -67,17 +68,13 @@ fn main() -> std::io::Result<()> {
             .data(&TERA)
             .data(&CONF)
             // Routes
-            .route("/", web::to(
-                || HttpResponse::Found()
-                    .header(header::LOCATION, "/home")
-                    .finish()))
             .route("/favicon.ico", web::to(
                 || HttpResponse::Found()
                     .header(header::LOCATION, "/static/assets/favicon.ico")
                     .finish()))
-            // Alias for /static/assets/
-            .route("/s/{path:.*}", web::get().to(asset))
+            .route("/s/{path:.*}", web::get().to(asset)) // Alias for /static/assets/
             .route("/{path}", web::get().to(page))
+            .route("/", web::get().to(page))
             // Services
             .service(fs::Files::new("/static", "static").show_files_listing())
             .configure(mail::mail_service)
