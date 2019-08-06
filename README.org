@@ -16,8 +16,6 @@
   $ cargo run --release
   #+end_src
 
------
-[[https://coronasoftware.net][https://coronasoftware.net/s/sLogo.png]]
 * Project
 ** TODO Refactor template rendering
    Handle all render logic in one spot.
@@ -40,3 +38,7 @@
    - [ ] Add logic for only exporting files that change.
      Might not be necessary, only happens once... Very fast.
 ** TODO Make tera instance global [[https://github.com/rust-lang-nursery/lazy-static.rs][static]]
+* Author
+-----
+[[mailto:noah@coronasoftware.net][Noah Corona]] \\
+[[https://coronasoftware.net][https://coronasoftware.net/s/sLogo.png]]
