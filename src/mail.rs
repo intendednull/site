@@ -1,10 +1,11 @@
 use actix_web::{error, Result, web, HttpResponse};
 use serde::Deserialize;
-use ini::Ini;
 
 use lettre::smtp::authentication::{Credentials, Mechanism};
 use lettre::{Transport, SmtpClient};
 use lettre_email::Email;
+use super::{CONF, TERA};
+
 
 
 #[derive(Deserialize)]
@@ -28,8 +29,8 @@ pub fn mail_service(cfg: &mut web::ServiceConfig) {
 /// Send contact form email
 fn mail((mut form, tmpl, conf): (
         web::Form<EmailForm>,
-        web::Data<tera::Tera>,
-        web::Data<Ini>)) -> Result<HttpResponse> {
+        web::Data<&TERA>,
+        web::Data<&CONF>)) -> Result<HttpResponse> {
 
     let smtp_conf = conf.section(Some("smtp")).unwrap();
     let email = Email::builder()

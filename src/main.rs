@@ -1,9 +1,10 @@
 use tera;
-use std::path::{PathBuf};
-use serde::Deserialize;
 use ini::Ini;
+use lazy_static::lazy_static;
 use dotenv::dotenv;
 use actix_files as fs;
+use std::path::{PathBuf};
+use serde::Deserialize;
 use actix_web::{
     HttpResponse, HttpServer,
     Result, App, web, middleware,
@@ -19,9 +20,14 @@ struct File {
     path: PathBuf
 }
 
+lazy_static! {
+    pub static ref TERA: tera::Tera = tera::compile_templates!("src/templates/**/*");
+    pub static ref CONF: Ini = Ini::load_from_file("conf.ini").unwrap();
+}
+
 
 /// Render and serve templates.
-fn page((tmpl, pg): (web::Data<tera::Tera>, web::Path<File>)) -> Result<HttpResponse> {
+fn page((tmpl, pg): (web::Data<&TERA>, web::Path<File>)) -> Result<HttpResponse> {
     Ok(HttpResponse::Ok()
        .content_type("text/html")
        .body(
@@ -45,24 +51,21 @@ fn asset(file: web::Path<File>) -> Result<HttpResponse> {
 }
 
 
+
 /// Start the server.
 fn main() -> std::io::Result<()> {
     dotenv().ok();
     env_logger::init();
+    blog::update_blog();
 
     HttpServer::new(|| {
-        blog::update_blog();
-
-        let tera = tera::compile_templates!("src/templates/**/*");
-        let conf = Ini::load_from_file("conf.ini").unwrap();
-
         App::new()
             // Middleware
             .wrap(middleware::DefaultHeaders::new().header("X-Version", "0.2"))
             .wrap(middleware::Compress::default())
             .wrap(middleware::Logger::default())
-            .data(tera)
-            .data(conf)
+            .data(&TERA)
+            .data(&CONF)
             // Routes
             .route("/", web::to(
                 || HttpResponse::Found()

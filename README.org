@@ -37,7 +37,9 @@
    - [ ] Choose a theme for exporting.
    - [ ] Add logic for only exporting files that change.
      Might not be necessary, only happens once... Very fast.
-** TODO Make tera instance global [[https://github.com/rust-lang-nursery/lazy-static.rs][static]]
+** DONE Make tera instance global [[https://github.com/rust-lang-nursery/lazy-static.rs][static]]
+   CLOSED: [2019-08-06 Tue 13:16]
+   - State "DONE"       from "TODO"       [2019-08-06 Tue 13:16]
 * Author
 -----
 [[mailto:noah@coronasoftware.net][Noah Corona]] \\
