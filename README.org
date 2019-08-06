@@ -2,11 +2,22 @@
 #+subtitle: Noah Corona
 #+email: noah@coronasoftware.net
 #+options: tasks:todo
+A large focus of this site is speed. It uses a blazingly fast actor system ([[https://actix.rs/][actix-web]]) for backend
+and [[https://getbootstrap.com/][bootstrap]] for most of the frontend.
+
+It also utilizes [[https://tera.netlify.com/][tera]] (a jinja2-like template engine), which allows for dynamic paging without having
+to write too much JavaScript.
+
+If you'd like to test it out for yourself, you'll need [[https://pandoc.org/installing.html][Pandoc]] installed on your system to convert
+the [[https://orgmode.org/manual/index.html][org]] files to HTML. You could also just comment out the ~update_blog()~ line, since the converted
+files are being tracked as well.
 * Setup
 ** Dependencies
    - [[https://www.rust-lang.org/tools/install][Rust]]
    - [[https://pandoc.org/installing.html][Pandoc]]
 ** SMTP
+   Used for the contact page.
+
    Create/Add the following section to ~conf.ini~ in the project root directory.
    #+begin_src conf
    [smtp]
@@ -20,7 +31,8 @@
   $ cargo run --release
   #+end_src
 
-* Project
+  Then go to ~127.0.0.1:8080~ in your web browser.
+* Project TODOS
 ** TODO Refactor template rendering
    Handle all render logic in one spot.
    Allow optional passing of context.
@@ -41,10 +53,10 @@
    - [ ] Choose a theme for exporting.
    - [ ] Add logic for only exporting files that change.
      Might not be necessary, only happens once... Very fast.
-** DONE Make tera instance global [[https://github.com/rust-lang-nursery/lazy-static.rs][static]]
+** DONE Make tera instance global [[https://github.com/rust-lang-nursery/lazy-static.rs][static]]                            :ARCHIVE:
    CLOSED: [2019-08-06 Tue 13:16]
    - State "DONE"       from "TODO"       [2019-08-06 Tue 13:16]
 * Author
+[[mailto:noah@coronasoftware.net][Noah Corona]]
 -----
-[[mailto:noah@coronasoftware.net][Noah Corona]] \\
 [[https://coronasoftware.net][https://coronasoftware.net/s/sLogo.png]]
