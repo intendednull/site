@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Profile{% endblock title %}
-{% block header %}
+
+{% block globals %}
 {% set current_page = "profile" %}
-{{ super() }}
-{% endblock header %}
+{% endblock globals %}
+
 {% block content %}
 <div class="container mt-5">
     <div class="card m-1 bg-light rounded shadow-lg">

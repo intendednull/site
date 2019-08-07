@@ -1,5 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Home{% endblock title %}
+
+{% block globals %}
+{% set current_page = "home" %}
+{% endblock globals %}
+
 {% block content %}
 <div class="text-center">
     <img class="my-5 img-fluid rounded mx-auto d-block" src="/s/Logo.png" style="max-height: 250px;">

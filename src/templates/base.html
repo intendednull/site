@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" style="height: 100%;">
+    {% import "components/navbar.html" as navbar %}
+    {% block globals %}{% endblock globals %}
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -10,12 +12,14 @@
             crossorigin="anonymous">
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <title>{% block title %}{% endblock title %} - Corona Software</title>
-        {% block head %}
-        {% endblock head %}
+        <title>{% block title %}
+            {{ current_page | title }}{% endblock title %} - Corona Software</title>
+        {% block head %}{% endblock head %}
     </head>
     <body class="d-flex flex-column" style="min-height: 100%;">
-        <div id="header">{% block header %}{% include "components/navbar.html" %}{% endblock header %}</div>
+        <div id="header">{% block header %}
+            {{ navbar::navbar(current_page=current_page) }}
+            {% endblock header %}</div>
         <div id="content" class="container-fluid flex-grow-1">
             {% if message %}
             <div id="notification" class="container">
