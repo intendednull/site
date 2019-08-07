@@ -8,11 +8,12 @@ use serde::Deserialize;
 use actix_web::{
     HttpResponse, HttpServer,
     Result, App, web, middleware,
-    error, http::header
+    http::header
 };
 
 mod mail;
 mod blog;
+mod template;
 
 
 #[derive(Deserialize)]
@@ -21,18 +22,7 @@ struct File {
 }
 
 lazy_static! {
-    pub static ref TERA: tera::Tera = tera::compile_templates!("src/templates/**/*");
     pub static ref CONF: Ini = Ini::load_from_file("conf.ini").unwrap();
-}
-
-
-/// Render templates.
-fn render(fp: &str, context: Option<&tera::Context>) -> Result<HttpResponse> {
-    Ok(HttpResponse::Ok()
-       .content_type("text/html")
-       .body(TERA.render(&fp, context.unwrap_or(&tera::Context::new()))
-             .map_err(|_| error::ErrorInternalServerError("Template error."))?
-       ))
 }
 
 
@@ -42,7 +32,7 @@ fn page(pg: web::Path<File>) -> Result<HttpResponse> {
         Some(p) => p.with_extension("html").to_str().unwrap().to_owned(),
         None => "home.html".to_owned(),
     };
-    render(&template, None)
+    template::render(&template, &tera::Context::new())
 }
 
 
@@ -50,8 +40,7 @@ fn page(pg: web::Path<File>) -> Result<HttpResponse> {
 /// Backwards compatible with old site.
 fn asset(file: web::Path<File>) -> Result<HttpResponse> {
     let fname = file.path.as_ref().unwrap()
-        .file_name().unwrap()
-        .to_str().unwrap();
+        .file_name().unwrap().to_str().unwrap();
     Ok(HttpResponse::Found()
        .header(header::LOCATION, format!("/static/assets/{}", fname))
        .finish())

@@ -1,10 +1,10 @@
-use actix_web::{error, Result, web, HttpResponse};
+use actix_web::{Result, web, HttpResponse};
 use serde::Deserialize;
 
 use lettre::smtp::authentication::{Credentials, Mechanism};
 use lettre::{Transport, SmtpClient};
 use lettre_email::Email;
-use super::{CONF, TERA, render};
+use super::{CONF, template};
 
 
 
@@ -46,14 +46,10 @@ fn mail(mut form: web::Form<EmailForm>) -> Result<HttpResponse> {
 
     let result = mailer.send(email.into());
     mailer.close();
-    // User feedback.
-    // TODO Make this more general, usable by all services.
-    let mut context = tera::Context::new();
-    if result.is_ok() {
-        context.insert("message", "Success!");
-    } else {
-        context.insert("error", "Oops, something went wrong..");
-    }
 
-    render("contact.html", Some(&context))
+    let context = result.ok().map_or_else(
+        || template::Message::error("Oops, something went wrong.."),
+        |_| template::Message::success("Success!"));
+
+    template::render("contact.html", &context)
 }

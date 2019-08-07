@@ -1,11 +1,17 @@
 #+options: tasks:todo
-* TODO Refactor template rendering
+* DONE Refactor template rendering                                  :ARCHIVE:
+  CLOSED: [2019-08-07 Wed 13:34]
+  - State "DONE"       from "TODO"       [2019-08-07 Wed 13:34]
   Handle all render logic in one spot.
   Allow optional passing of context.
-* TODO Implement user feedback w/ templates
+* DONE Implement user feedback w/ templates                         :ARCHIVE:
+  CLOSED: [2019-08-07 Wed 13:34]
+  - State "DONE"       from "TODO"       [2019-08-07 Wed 13:34]
   [[file:src/mail.rs:://%20TODO%20Make%20this%20more%20general,%20usable%20by%20all%20services.][Already hardcoded in contact form.]]
   Move inside future template rendering fn?
-* TODO Remove index redirect to home
+* DONE Remove index redirect to home                                :ARCHIVE:
+  CLOSED: [2019-08-07 Wed 13:33]
+  - State "DONE"       from "TODO"       [2019-08-07 Wed 13:33]
   Although inconsistency is bad, redirecting is worse.
   Either remove the ~/home~ portion altogther or modify history.
    #+begin_src js

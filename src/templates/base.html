@@ -16,7 +16,13 @@
     </head>
     <body class="d-flex flex-column" style="min-height: 100%;">
         <div id="header">{% block header %}{% include "components/navbar.html" %}{% endblock header %}</div>
-        <div id="content" class="container-fluid flex-grow-1">{% block content %}{% endblock content %}</div>
+        <div id="content" class="container-fluid flex-grow-1">
+            {% if message %}
+            <div id="notification" class="container">
+                <div class="alert alert-{{ level }} my-3" role="alert">{{ message }}</div>
+            </div>
+            {% endif %}
+            {% block content %}{% endblock content %}</div>
         <div id="footer" class="container-fluid text-center p-2 mt-5 bg-dark">
             {% block footer %}
             <a class="my-2"
