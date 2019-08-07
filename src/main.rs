@@ -3,8 +3,7 @@ use ini::Ini;
 use lazy_static::lazy_static;
 use dotenv::dotenv;
 use actix_files as fs;
-use std::path::{PathBuf, Path};
-use serde::Deserialize;
+use std::path::Path;
 use actix_web::{
     HttpResponse, HttpServer,
     Result, App, web, middleware,
@@ -13,13 +12,11 @@ use actix_web::{
 
 mod mail;
 mod blog;
+mod util;
 mod template;
 
+use util::File;
 
-#[derive(Deserialize)]
-struct File {
-    path: Option<PathBuf>
-}
 
 lazy_static! {
     pub static ref CONF: Ini = Ini::load_from_file("conf.ini").unwrap();
@@ -27,10 +24,10 @@ lazy_static! {
 
 
 /// Serve pages.
-fn page(pg: web::Path<File>) -> Result<HttpResponse> {
-    let fp = match &pg.path {
-        Some(p) if p == Path::new("blog") => "blog/index.html".to_owned(),
-        Some(p) => p.with_extension("html").to_str().unwrap().to_owned(),
+fn page(pg: Option<web::Path<File>>) -> Result<HttpResponse> {
+    let fp = match pg.as_ref() {
+        Some(p) if p.path == Path::new("blog") => "blog/blog.html".to_owned(),
+        Some(p) => p.path.with_extension("html").to_str().unwrap().to_owned(),
         None => "home.html".to_owned(),
     };
     template::render(&fp, &tera::Context::new())
@@ -40,10 +37,8 @@ fn page(pg: web::Path<File>) -> Result<HttpResponse> {
 /// Redirect asset requests to static file service.
 /// Backwards compatible with old site.
 fn asset(file: web::Path<File>) -> Result<HttpResponse> {
-    let fname = file.path.as_ref().unwrap()
-        .file_name().unwrap().to_str().unwrap();
     Ok(HttpResponse::Found()
-       .header(header::LOCATION, format!("/static/assets/{}", fname))
+       .header(header::LOCATION, format!("/static/assets/{}", file.as_ref().name()))
        .finish())
 }
 
