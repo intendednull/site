@@ -4,7 +4,7 @@ use serde::Deserialize;
 use lettre::smtp::authentication::{Credentials, Mechanism};
 use lettre::{Transport, SmtpClient};
 use lettre_email::Email;
-use super::{CONF, TERA};
+use super::{CONF, TERA, render};
 
 
 
@@ -27,12 +27,8 @@ pub fn mail_service(cfg: &mut web::ServiceConfig) {
 
 
 /// Send contact form email
-fn mail((mut form, tmpl, conf): (
-        web::Form<EmailForm>,
-        web::Data<&TERA>,
-        web::Data<&CONF>)) -> Result<HttpResponse> {
-
-    let smtp_conf = conf.section(Some("smtp")).unwrap();
+fn mail(mut form: web::Form<EmailForm>) -> Result<HttpResponse> {
+    let smtp_conf = CONF.section(Some("smtp")).unwrap();
     let email = Email::builder()
         .to(smtp_conf.get("mailto").unwrap().clone())
         .from((form.email.clone(), form.name.clone()))
@@ -59,9 +55,5 @@ fn mail((mut form, tmpl, conf): (
         context.insert("error", "Oops, something went wrong..");
     }
 
-    Ok(HttpResponse::Ok()
-       .content_type("text/html")
-       .body(tmpl.render("contact.html", &context)
-             .map_err(|_| error::ErrorInternalServerError("Template error."))?
-       ))
+    render("contact.html", Some(&context))
 }

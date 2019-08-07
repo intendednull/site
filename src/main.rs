@@ -26,18 +26,23 @@ lazy_static! {
 }
 
 
-/// Render and serve templates.
-fn page((_tera, pg): (web::Data<&TERA>, web::Path<File>)) -> Result<HttpResponse> {
+/// Render templates.
+fn render(fp: &str, context: Option<&tera::Context>) -> Result<HttpResponse> {
+    Ok(HttpResponse::Ok()
+       .content_type("text/html")
+       .body(TERA.render(&fp, context.unwrap_or(&tera::Context::new()))
+             .map_err(|_| error::ErrorInternalServerError("Template error."))?
+       ))
+}
+
+
+/// Serve pages.
+fn page(pg: web::Path<File>) -> Result<HttpResponse> {
     let template = match &pg.path {
         Some(p) => p.with_extension("html").to_str().unwrap().to_owned(),
         None => "home.html".to_owned(),
     };
-
-    Ok(HttpResponse::Ok()
-       .content_type("text/html")
-       .body(_tera.render(&template, &tera::Context::new())
-             .map_err(|_| error::ErrorInternalServerError("Template error."))?
-       ))
+    render(&template, None)
 }
 
 
@@ -65,8 +70,6 @@ fn main() -> std::io::Result<()> {
             .wrap(middleware::DefaultHeaders::new().header("X-Version", "0.2"))
             .wrap(middleware::Compress::default())
             .wrap(middleware::Logger::default())
-            .data(&TERA)
-            .data(&CONF)
             // Routes
             .route("/favicon.ico", web::to(
                 || HttpResponse::Found()
