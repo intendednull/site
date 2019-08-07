@@ -3,7 +3,7 @@ use ini::Ini;
 use lazy_static::lazy_static;
 use dotenv::dotenv;
 use actix_files as fs;
-use std::path::{PathBuf};
+use std::path::{PathBuf, Path};
 use serde::Deserialize;
 use actix_web::{
     HttpResponse, HttpServer,
@@ -28,11 +28,12 @@ lazy_static! {
 
 /// Serve pages.
 fn page(pg: web::Path<File>) -> Result<HttpResponse> {
-    let template = match &pg.path {
+    let fp = match &pg.path {
+        Some(p) if p == Path::new("blog") => "blog/index.html".to_owned(),
         Some(p) => p.with_extension("html").to_str().unwrap().to_owned(),
         None => "home.html".to_owned(),
     };
-    template::render(&template, &tera::Context::new())
+    template::render(&fp, &tera::Context::new())
 }
 
 
