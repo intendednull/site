@@ -1,5 +1,4 @@
 use std::path::PathBuf;
-use chrono::{DateTime, TimeZone, Utc};
 use std::time::SystemTime;
 use serde::{Deserialize, Serialize};
 
@@ -24,13 +23,13 @@ impl File {
             .to_str().unwrap().to_owned()
     }
 
-    pub fn timestamp(&self) -> std::io::Result<DateTime<Utc>>  {
+    pub fn timestamp(&self) -> std::io::Result<u64>  {
         let last_modified = self.path.metadata()?
             .modified()?
             .duration_since(SystemTime::UNIX_EPOCH).unwrap()
-            .as_secs() as i64;
+            .as_secs();
 
-        Ok(Utc.timestamp(last_modified, 0))
+        Ok(last_modified)
     }
 
 }

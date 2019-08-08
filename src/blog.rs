@@ -10,7 +10,7 @@ use super::util::File;
 #[derive(Serialize, Clone)]
 struct BlogPost {
     title: String,
-    timestamp: String,
+    timestamp: u64,
     file: File
 }
 
@@ -20,7 +20,7 @@ impl BlogPost {
         let file = File::new(fp);
         Self {
             title: file.title(),
-            timestamp: file.timestamp().unwrap().to_rfc2822(),
+            timestamp: file.timestamp().unwrap(),
             file: file
         }
     }

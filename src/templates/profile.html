@@ -19,10 +19,12 @@
                 <div class="card-body">
                     <p class="card-text">
                         {% include "blog/intro.html" %}
-                        {{ post.timestamp }}
                     </p>
                 </div>
             </div>
+        </div>
+        <div class="card-footer text-muted text-right">
+            Last modified: {{ post.timestamp | date }}
         </div>
     </div>
 </div>
