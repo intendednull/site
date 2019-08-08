@@ -4,7 +4,7 @@ use std::time::SystemTime;
 use serde::{Deserialize, Serialize};
 
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Clone)]
 pub struct File {
     pub path: PathBuf
 }
@@ -16,6 +16,11 @@ impl File {
 
     pub fn name(&self) -> String {
         self.path.file_name().unwrap()
+            .to_str().unwrap().to_owned()
+    }
+
+    pub fn title(&self) -> String {
+        self.path.file_stem().unwrap()
             .to_str().unwrap().to_owned()
     }
 

@@ -1,28 +1,44 @@
 use pandoc;
 use lazy_static::lazy_static;
 use std::path::{PathBuf, Path};
+use std::collections::HashMap;
+use serde::{Serialize};
 
 use super::util::File;
 
 
+#[derive(Serialize, Clone)]
 struct BlogPost {
+    title: String,
+    timestamp: String,
     file: File
 }
 
+
 impl BlogPost {
     fn new(fp: PathBuf) -> Self {
-        Self { file: File::new(fp) }
+        let file = File::new(fp);
+        Self {
+            title: file.title(),
+            timestamp: file.timestamp().unwrap().to_rfc2822(),
+            file: file
+        }
     }
 }
 
 
 lazy_static! {
-    static ref POSTS: Vec<BlogPost> = {
+    static ref POSTS: HashMap<String, BlogPost> = {
         let blogdir = Path::new("blog");
+        let mut posts = HashMap::new();
 
-        blogdir.read_dir().unwrap()
-            .map(|fp| BlogPost::new(fp.unwrap().path()))
-            .collect()
+        for fp in blogdir.read_dir().unwrap() {
+            if let Ok(fp) = fp {
+                let post = BlogPost::new(fp.path());
+                posts.insert(post.title.clone(), post);
+            }
+        }
+        posts
     };
 }
 
@@ -32,7 +48,7 @@ lazy_static! {
 pub fn update_blog() {
     let outdir = Path::new("src/templates/blog");
 
-    for entry in POSTS.iter() {
+    for entry in POSTS.values() {
         convert(&entry, &outdir);
     }
 }
@@ -48,4 +64,22 @@ fn convert(post: &BlogPost, outdir: &Path) {
         pandoc::OutputKind::File(fpout.to_str().unwrap().to_string())
     );
     pdoc.execute().unwrap();
+}
+
+
+fn make_get_blogpost() -> tera::GlobalFn {
+    Box::new(move |args| -> tera::Result<tera::Value> {
+        match args.get("title") {
+            Some(val) => match tera::from_value::<String>(val.clone()) {
+                Ok(v) =>  Ok(tera::to_value(POSTS.get(&v).unwrap()).unwrap()),
+                Err(_) => Err("oops".into()),
+            },
+            None => Err("Could not get blog post.".into()),
+        }
+    })
+}
+
+
+pub fn configure_tera(_tera: &mut tera::Tera) {
+    _tera.register_function("get_blogpost", make_get_blogpost());
 }
