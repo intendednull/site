@@ -13,6 +13,7 @@ use actix_web::{
 mod mail;
 mod blog;
 mod util;
+mod asset;
 mod template;
 
 use util::File;
@@ -64,7 +65,8 @@ fn main() -> std::io::Result<()> {
             .route("/{path}", web::get().to(page))
             .route("/", web::get().to(page))
             // Services
-            .service(fs::Files::new("/static", "static").show_files_listing())
+            // .service(fs::Files::new("/static", "static").show_files_listing())
+            .configure(asset::asset_service)
             .configure(mail::mail_service)
     })
         // .bind_uds("./site.sock")?
