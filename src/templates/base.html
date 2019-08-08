@@ -21,19 +21,20 @@
             {{ navbar::navbar(current_page=current_page) }}
             {% endblock header %}</div>
         <div id="content" class="container-fluid flex-grow-1">
+            {% block content %}{% endblock content %}
             {% if message %}
             <div id="notification" class="container">
                 <div class="alert alert-{{ level }} my-3" role="alert">{{ message }}</div>
             </div>
             {% endif %}
-            {% block content %}{% endblock content %}</div>
+        </div>
         <div id="footer" class="container-fluid text-center p-2 mt-5 bg-dark">
             {% block footer %}
+            <div class="my-3">{% include "components/social.html" %}</div>
             <a class="my-2"
                href="https://github.com/Zer0897/site"
                target="_blank"
                rel="noopener noreferrer">This site is open source</a>
-            <div class="my-2">{% include "components/social.html" %}</div>
             <p class="font-weight-light text-light mt-3">Copyright &copy; 2019 Noah Corona</p>
             {% endblock footer %}
         </div>

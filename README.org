@@ -1,7 +1,7 @@
 #+title: Corona Software Solutions
 #+subtitle: Noah Corona
 #+email: noah@coronasoftware.net
-A large focus of this site is speed. It uses a blazingly fast actor system ([[https://actix.rs/][actix-web]]) for backend
+A large focus of this site is speed. It uses a "blazingly fast" actor system ([[https://actix.rs/][actix-web]]) for backend
 and [[https://getbootstrap.com/][bootstrap]] for most of the frontend.
 
 It also utilizes [[https://tera.netlify.com/][tera]] (a jinja2-like template engine), which allows for dynamic paging without having
@@ -9,7 +9,7 @@ to write too much JavaScript.
 
 If you'd like to test it out for yourself, you'll need [[https://pandoc.org/installing.html][Pandoc]] installed on your system to convert
 the [[https://orgmode.org/manual/index.html][org]] files to HTML. You could also just comment out the ~update_blog()~ line, since the converted
-files are being tracked as well.
+files are also tracked.
 * Setup
 ** Dependencies
    - [[https://www.rust-lang.org/tools/install][Rust]]
