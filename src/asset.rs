@@ -24,19 +24,17 @@ pub fn asset_service(cfg: &mut web::ServiceConfig) {
 
 fn asset((file, size): (web::Path<File>, web::Query<FileSize>)) -> Result<fs::NamedFile> {
     let asset_dir = Path::new("static/assets");
-
     let fpin = asset_dir.join(file.name());
     let fpout = match (size.width, size.height) {
         (None, None) => fpin.clone(),
         (w, h) => {
             let fp = asset_dir.join(
-                format!(".cache/{}-{}x{}", file.title(), w.unwrap(), h.unwrap())
+                format!(".cache/{}-{}x{}", file.title(), w.unwrap_or(0), h.unwrap_or(0))
             ).with_extension(file.path.extension().unwrap());
             fp.parent().map(|p| std::fs::create_dir(p));
             fp
         }
     };
-
     let f = std::fs::File::open(&fpout).or_else(|_| {
         resize(&fpin, &size, &fpout)
     })?;
