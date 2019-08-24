@@ -1,22 +1,13 @@
 #+title: Corona Software Solutions
 #+subtitle: Noah Corona
 #+email: noah@coronasoftware.net
-A large focus of this site is speed. It uses a "blazingly fast" actor system ([[https://actix.rs/][actix-web]]) for backend
-and [[https://getbootstrap.com/][bootstrap]] for most of the frontend.
-
-It also utilizes [[https://tera.netlify.com/][tera]] (a jinja2-like template engine), which allows for dynamic paging without having
-to write too much JavaScript.
-
-If you'd like to test it out for yourself, you'll need [[https://pandoc.org/installing.html][Pandoc]] installed on your system to convert
-the [[https://orgmode.org/manual/index.html][org]] files to HTML. You could also just comment out the ~update_blog()~ line, since the converted
-files are also tracked.
+This site uses a "blazingly fast" actor system ([[https://actix.rs/][actix-web]]) for back-end and [[https://getbootstrap.com/][bootstrap]] for front. It
+also takes advantage of [[https://tera.netlify.com/][tera]]: a jinja2-like template engine.
 * Setup
 ** Dependencies
    - [[https://www.rust-lang.org/tools/install][Rust]]
-   - [[https://pandoc.org/installing.html][Pandoc]]
+   - [[https://pandoc.org/installing.html][Pandoc]] -- Org -> HTML
 ** SMTP
-   Used for the contact page.
-
    Create/Add the following section to ~conf.ini~ in the project root directory.
    #+begin_src conf
    [smtp]
@@ -26,11 +17,12 @@ files are also tracked.
    pass=examplepass123
    #+end_src
 * Run
+  Compile and run:
   #+begin_src sh
   $ cargo run --release
   #+end_src
 
-  Then go to ~127.0.0.1:8080~ in your web browser.
+  Then go to [[127.0.0.1:8080]].
 * Author
 [[mailto:noah@coronasoftware.net][Noah Corona]]
 -----
