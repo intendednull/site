@@ -22,7 +22,7 @@ also takes advantage of [[https://tera.netlify.com/][tera]]: a jinja2-like templ
   $ cargo run --release
   #+end_src
 
-  Then go to [[127.0.0.1:8080]].
+  Then go to [[http://127.0.0.1:8080][127.0.0.1:8080]]
 * Author
 [[mailto:noah@coronasoftware.net][Noah Corona]]
 -----
